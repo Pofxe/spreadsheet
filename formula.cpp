@@ -26,7 +26,6 @@ namespace
             try 
             {
                 result = ast.Execute();
-
             }
             catch (const FormulaError& evaluate_error) 
             {
@@ -44,6 +43,7 @@ namespace
         }
 
     private:
+
         FormulaAST ast;
     };
 

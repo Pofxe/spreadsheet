@@ -55,8 +55,8 @@ namespace ASTImpl
 
         void PrintFormula(std::ostream& out_, ExprPrecedence parent_precedence_,  bool right_child_ = false) const 
         {
-            auto precedence = GetPrecedence();
-            auto mask = right_child_ ? PR_RIGHT : PR_LEFT;
+            ExprPrecedence precedence = GetPrecedence();
+            PrecedenceRule mask = right_child_ ? PR_RIGHT : PR_LEFT;
             bool parens_needed = PRECEDENCE_RULES[parent_precedence_][precedence] & mask;
 
             if (parens_needed) 
@@ -276,14 +276,14 @@ namespace ASTImpl
                     type = UnaryOpExpr::UnaryPlus;
                 }
 
-                auto node = std::make_unique<UnaryOpExpr>(type, std::move(operand));
+                std::unique_ptr<UnaryOpExpr> node = std::make_unique<UnaryOpExpr>(type, std::move(operand));
                 args.back() = std::move(node);
             }
 
             void exitLiteral(FormulaParser::LiteralContext* ctx_) override 
             {
                 double value = 0;
-                auto valueStr = ctx_->NUMBER()->getSymbol()->getText();
+                std::string valueStr = ctx_->NUMBER()->getSymbol()->getText();
 
                 std::istringstream in(valueStr);
                 in >> value;
@@ -293,7 +293,7 @@ namespace ASTImpl
                     throw ParsingError("Invalid number: " + valueStr);
                 }
 
-                auto node = std::make_unique<NumberExpr>(value);
+                std::unique_ptr<NumberExpr> node = std::make_unique<NumberExpr>(value);
                 args.push_back(std::move(node));
             }
 
@@ -326,7 +326,7 @@ namespace ASTImpl
                     type = BinaryOpExpr::Divide;
                 }
 
-                auto node = std::make_unique<BinaryOpExpr>(type, std::move(lhs), std::move(rhs));
+                std::unique_ptr<BinaryOpExpr> node = std::make_unique<BinaryOpExpr>(type, std::move(lhs), std::move(rhs));
                 args.back() = std::move(node);
             }
 
@@ -366,7 +366,7 @@ FormulaAST ParseFormulaAST(std::istream& in_)
     CommonTokenStream tokens(&lexer);
 
     FormulaParser parser(&tokens);
-    auto error_handler = std::make_shared<BailErrorStrategy>();
+    std::shared_ptr<BailErrorStrategy> error_handler = std::make_shared<BailErrorStrategy>();
     parser.setErrorHandler(error_handler);
     parser.removeErrorListeners();
 
