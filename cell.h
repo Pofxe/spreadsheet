@@ -3,11 +3,16 @@
 #include "common.h"
 #include "formula.h"
 
-class Cell : public CellInterface
+#include <functional>
+#include <unordered_set>
+
+class Sheet;
+
+class Cell : public CellInterface 
 {
 public:
 
-    Cell();
+    Cell(Sheet& sheet_);
     ~Cell();
 
     void Set(std::string text_);
@@ -15,53 +20,22 @@ public:
 
     Value GetValue() const override;
     std::string GetText() const override;
+    std::vector<Position> GetReferencedCells() const override;
+
+    bool IsReferenced() const;
 
 private:
 
-    class Impl
-    {
-    public:
+    class Impl;
+    class EmptyImpl;
+    class TextImpl;
+    class FormulaImpl;
 
-        virtual Value GetValue() const = 0;
-        virtual std::string GetText() const = 0;
-
-        virtual ~Impl() = default;
-    };
-
-    class EmptyImpl : public Impl
-    {
-    public:
-
-        Value GetValue() const override;
-        std::string GetText() const override;
-    };
-
-    class TextImpl : public Impl
-    {
-    public:
-
-        explicit TextImpl(std::string text_);
-
-        Value GetValue() const override;
-        std::string GetText() const override;
-
-    private:
-        std::string text;
-    };
-
-    class FormulaImpl : public Impl 
-    {
-    public:
-
-        explicit FormulaImpl(std::string text_);
-
-        Value GetValue() const override;
-        std::string GetText() const override;
-
-    private:
-
-        std::unique_ptr<FormulaInterface> formula_ptr;
-    };
+    bool WouldIntroduceCircularDependency(const Impl& new_impl_) const;
+    void InvalidateCacheRecursive(bool force_ = false);
 
     std::unique_ptr<Impl> impl;
+    Sheet& sheet;
+    std::unordered_set<Cell*> l_nodes;
+    std::unordered_set<Cell*> r_nodes;
 };
