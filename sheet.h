@@ -19,6 +19,7 @@ public:
 class CellComparator 
 {
 public:
+
     bool operator()(const Position& lhs_, const Position& rhs_) const 
     {
         return lhs_ == rhs_;
@@ -28,6 +29,7 @@ public:
 class Sheet : public SheetInterface 
 {
 public:
+
     using Table = std::unordered_map<Position, std::unique_ptr<Cell>, CellHasher, CellComparator>;
 
     ~Sheet();

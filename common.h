@@ -63,18 +63,21 @@ std::ostream& operator<<(std::ostream& output_, FormulaError fe_);
 class InvalidPositionException : public std::out_of_range 
 {
 public:
+
     using std::out_of_range::out_of_range;
 };
 
 class FormulaException : public std::runtime_error 
 {
 public:
+
     using std::runtime_error::runtime_error;
 };
 
 class CircularDependencyException : public std::runtime_error 
 {
 public:
+
     using std::runtime_error::runtime_error;
 };
 
@@ -97,6 +100,7 @@ inline constexpr char ESCAPE_SIGN = '\'';
 class SheetInterface 
 {
 public:
+
     virtual ~SheetInterface() = default;
 
     virtual void SetCell(Position pos, std::string text_) = 0;

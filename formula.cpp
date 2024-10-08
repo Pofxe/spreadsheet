@@ -32,7 +32,7 @@ std::string_view FormulaError::ToString() const
         return "#VALUE!";
 
     case Category::Div0:
-        return "#DIV/0!";
+        return "#ARITHM!";
     }
     return "";
 }
@@ -125,11 +125,11 @@ namespace
 
 std::unique_ptr<FormulaInterface> ParseFormula(std::string expression_) 
 {
-    try 
+    try
     {
         return std::make_unique<Formula>(std::move(expression_));
     }
-    catch (...) 
+    catch (...)
     {
         throw FormulaException("");
     }

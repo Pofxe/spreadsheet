@@ -14,7 +14,7 @@ Sheet::~Sheet() {}
 
 void Sheet::SetCell(Position pos_, std::string text_) 
 {
-    if (!pos_.IsValid())
+   if (!pos_.IsValid())
     {
         throw InvalidPositionException("Invalid position");
     }
@@ -99,6 +99,7 @@ void Sheet::PrintValues(std::ostream& output_) const
 void Sheet::PrintTexts(std::ostream& output_) const 
 {
     Size size = GetPrintableSize();
+
     for (int row = 0; row < size.rows; ++row) 
     {
         for (int col = 0; col < size.cols; ++col) 
@@ -119,7 +120,7 @@ void Sheet::PrintTexts(std::ostream& output_) const
     }
 }
 
-const Cell* Sheet::GetCellPtr(Position pos_) const 
+Cell* Sheet::GetCellPtr(Position pos_)
 {
     if (!pos_.IsValid())
     {
@@ -135,9 +136,9 @@ const Cell* Sheet::GetCellPtr(Position pos_) const
     return cells.at(pos_).get();
 }
 
-Cell* Sheet::GetCellPtr(Position pos_) 
+const Cell* Sheet::GetCellPtr(Position pos_) const
 {
-    return const_cast<Cell*>( static_cast<const Sheet&>(*this).GetCellPtr(pos_));
+    return const_cast<Sheet*>(this)->GetCellPtr(pos_);
 }
 
 std::unique_ptr<SheetInterface> CreateSheet() 
