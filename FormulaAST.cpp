@@ -130,23 +130,26 @@ namespace ASTImpl
 
             double Evaluate(const SheetArgs& args_) const override 
             {
+                double lhsValue = lhs->Evaluate(args_);
+                double rhsValue = rhs->Evaluate(args_);
                 double result = 0.0;
-                switch (type) 
+
+                switch (type)
                 {
                 case Add:
-                    result = lhs->Evaluate(args_) + rhs->Evaluate(args_);
+                    result = lhsValue + rhsValue;
                     break;
 
                 case Subtract:
-                    result = lhs->Evaluate(args_) - rhs->Evaluate(args_);
+                    result = lhsValue - rhsValue;
                     break;
 
                 case Multiply:
-                    result = lhs->Evaluate(args_) * rhs->Evaluate(args_);
+                    result = lhsValue * rhsValue;
                     break;
 
                 case Divide:
-                    result = lhs->Evaluate(args_) / rhs->Evaluate(args_);
+                    result = lhsValue / rhsValue;
                     break;
                 }
                 if (!std::isfinite(result))
